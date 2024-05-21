@@ -1,13 +1,17 @@
 package com.example.CogentCapstone;
 
-import jakarta.persistence.EmbeddedId;
+
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
 
 @Entity
+@Table(name="user")
 public class User {
-	@EmbeddedId
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
@@ -15,7 +19,7 @@ public class User {
 	private String password;
 	private String role;
 	
-	public void User(String name, String password, String role) {
+	public User(String name, String password, String role) {
 		this.username = name;
 		this.password = password;
 		this.role = role;
@@ -41,6 +45,10 @@ public class User {
 
 	public String getRole() {
 		return this.role;
+	}
+	
+	public void setRole(String role) {
+		this.role = role;
 	}
 	
 }

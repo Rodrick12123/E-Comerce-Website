@@ -13,20 +13,22 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    
     public User save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(user.getPassword());
+        String role = "USER";
+        
+        user.setRole("role");
+        
         return userRepository.save(user);
     }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-
-    public UserDetails loadUserByName(String name){
+    
+    @Override
+    public UserDetails loadUserByUsername(String name){
         User user = userRepository.findByUsername(name);
             
         return org.springframework.security.core.userdetails.User
@@ -36,9 +38,5 @@ public class UserService implements UserDetailsService {
             .build();
     }
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 }
