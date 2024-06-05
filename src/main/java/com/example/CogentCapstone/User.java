@@ -13,20 +13,30 @@ import jakarta.persistence.Id;
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
+	private Long id;
 	
 	private String username;
 	private String password;
 	private String role;
+	private String email;
 	
-	public User(String name, String password, String role) {
-		this.username = name;
-		this.password = password;
-		this.role = role;
-	}
+//	public User(String name, String password, String role, String email) {
+//		this.username = name;
+//		this.password = password;
+//		this.role = role;
+//		this.email = email;
+//		
+//	}
 	
 	public String getUsername() {
 		return this.username;
+	}
+	
+	public String getEmail() {
+		return this.email;	}
+	
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public void setUsername(String username) {

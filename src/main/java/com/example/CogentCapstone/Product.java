@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 
 @Entity
@@ -13,26 +14,27 @@ import jakarta.persistence.Id;
 public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long Id;
-	
-	private int price;
-	private int quantity;
-	private String category;
-	private String name;
-	
-	public Product(int price, int quantity, String category, String name) {
-		this.price = price;
-		this.quantity = quantity;
-		this.name = name;
-		this.category = category;
-	}
-	
-	public int getPrice() {
+	private Long id;
+    private String name;
+    private String category;
+    private Double price;
+    private Integer quantity;
+    private String description;
+    @Lob
+	private byte[] image;
+    
+	public Double getPrice() {
 		return this.price;
 	}
 	
 	public int getQuantity() {
 		return this.quantity;
+	}
+	public byte[] getImage() {
+		return this.image;
+	}
+	public void setImage(byte[] image) {
+		this.image= image;
 	}
 	public String getName() {
 		return this.name;
@@ -40,7 +42,7 @@ public class Product {
 	public void setName(String name) {
 		this.name= name;
 	}
-	public void setPrice(int price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 	
