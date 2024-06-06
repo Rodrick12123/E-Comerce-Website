@@ -1,10 +1,12 @@
 package com.example.CogentCapstone;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-//ToDo: Finish cart service
+
 @Service
 public class CartService {
     @Autowired
@@ -16,53 +18,62 @@ public class CartService {
     @Autowired
     private UserRepository userRepository;
 
-    public Cart getCartByUserId(Long userId) {
+    public List<Cart> getCartByUserId(Long userId) {
         return cartRepository.findByUserId(userId);
     }
 
     public Cart addItemToCart(Long userId, Long productId, int quantity) {
-        Cart cart = getCartByUserId(userId);
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Check if the product is already in the cart
-        Cart existingCartItem = cartRepository.findByUserAndProduct(user, product);
+        Optional<Cart> existingCartItem = cartRepository.findByUserAndProduct(user, product);
 
-        if (existingCartItem != null) {
-            Cart item = existingCartItem;
-            item.setQuantity(item.getQuantity() + quantity);
-            return cartRepository.save(item);
+        Cart cartItem;
+        if (existingCartItem.isPresent()) {
+            cartItem = existingCartItem.get();
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
         } else {
-            Cart newItem = new Cart();
-            newItem.setUser(user);
-            newItem.setProduct(product);
-            newItem.setQuantity(quantity);
-            return cartRepository.save(newItem);
+            cartItem = new Cart();
+            cartItem.setUser(user);
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
         }
+        return cartRepository.save(cartItem);
     }
-
+    
+    @Transactional
     public Cart updateCartItem(Long userId, Long productId, int quantity) {
-        Cart cart = getCartByUserId(userId);
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Cart item = cartRepository.findByUserAndProduct(cart.getUser(), product);
+        Cart cartItem = cartRepository.findByUserAndProduct(user, product)
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
 
-        item.setQuantity(quantity);
-        return cartRepository.save(item);
+        cartItem.setQuantity(quantity);
+        return cartRepository.save(cartItem);
     }
-
+    
+    @Transactional
     public void removeItemFromCart(Long userId, Long productId) {
-        Cart cart = getCartByUserId(userId);
-        Optional<Product> product = productRepository.findById(productId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Cart item = cartRepository.findByUserAndProduct(cart.getUser(), product);
+        Cart cartItem = cartRepository.findByUserAndProduct(user, product)
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
 
-        cartRepository.delete(item);
+        cartRepository.delete(cartItem);
     }
 
+    @Transactional
     public void clearCart(Long userId) {
-        Cart cart = getCartByUserId(userId);
-        cartRepository.deleteAllByUser(cart.getUser());
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        cartRepository.deleteAllByUser(user);
     }
 }
-

@@ -1,6 +1,7 @@
 package com.example.CogentCapstone;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -9,11 +10,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4201")
@@ -39,6 +49,38 @@ public class AccountController {
     @GetMapping("/users")
     public List<User> loadUsers() {
         return userService.loadUsers();
+    }
+    
+    @GetMapping("/user/{id}")
+    public Optional<User> loadUser(@PathVariable("id") Long id) {
+        return userService.findById(id);
+    }
+    
+    @GetMapping("/getUser/{name}")
+    public Long getCurrentUserId(@PathVariable("name") String name) {
+//    	Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+//    	String userDetails = (String) auth.getName();
+//    	
+//    	User user = userService.findByUsername(userDetails);
+//        if (user != null) {
+//        	
+//        	return ResponseEntity.ok(user.getId());
+//        }else {
+//        	return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+    	
+    	return userService.findByUsername(name).getId();
+    	
+//    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth != null && auth.isAuthenticated() ) {
+//            String username = auth.getName();
+//            User user = userService.findByUsername(username);
+//            if (user != null) {
+//                return ResponseEntity.ok(user.getId());
+//            }
+//        }
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        
     }
     
     @GetMapping("/logout")

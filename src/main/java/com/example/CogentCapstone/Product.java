@@ -15,13 +15,14 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
     private String name;
     private String category;
     private Double price;
     private Integer quantity;
     private String description;
-    @Lob
-	private byte[] image;
+
+	private String image;
     
 	public Double getPrice() {
 		return this.price;
@@ -30,11 +31,20 @@ public class Product {
 	public int getQuantity() {
 		return this.quantity;
 	}
-	public byte[] getImage() {
+	public void setQuantity(int q) {
+		this.quantity = q;
+	}
+	public String getImage() {
 		return this.image;
 	}
-	public void setImage(byte[] image) {
+	public void setImage(String image) {
 		this.image= image;
+	}
+	public Long getId() {
+		return this.id;
+	}
+	public void setId(Long id) {
+		this.id= id;
 	}
 	public String getName() {
 		return this.name;

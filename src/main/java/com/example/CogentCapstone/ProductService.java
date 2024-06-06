@@ -1,6 +1,7 @@
 package com.example.CogentCapstone;
 
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -11,7 +12,16 @@ public class ProductService {
 	@Autowired
 	private ProductRepository productRepo;
 	
+	private Random random = new Random();
+	
+	private Long generateRandomId() {
+	    return random.nextLong(1, Long.MAX_VALUE); 
+	}
+	
 	public Product save(Product product) {
+        if (product.getId() == null) {
+            product.setId(generateRandomId());
+        }
         return productRepo.save(product);
     }
 	public List<Product> getAllProductsSorted(String sortBy){
@@ -24,6 +34,7 @@ public class ProductService {
 	}
 	
 	public List<Product> getAllProducts(){
+		
 		return productRepo.findAll();
 	}
 	

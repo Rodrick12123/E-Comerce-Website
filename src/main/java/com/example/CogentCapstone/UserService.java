@@ -3,6 +3,7 @@ package com.example.CogentCapstone;
 import com.example.CogentCapstone.User;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,7 +31,9 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
     
-    
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);

@@ -8,21 +8,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/cart")
 @CrossOrigin(origins = "http://localhost:4201")
 public class CartController {
+
     @Autowired
     private CartService cartService;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<Cart> getCart(@PathVariable Long userId) {
-        Cart cart = cartService.getCartByUserId(userId);
+    public ResponseEntity<List<Cart>> getCart(@PathVariable Long userId) {
+        List<Cart> cart = cartService.getCartByUserId(userId);
         return ResponseEntity.ok(cart);
     }
 
@@ -49,5 +51,4 @@ public class CartController {
         cartService.clearCart(userId);
         return ResponseEntity.noContent().build();
     }
-
 }

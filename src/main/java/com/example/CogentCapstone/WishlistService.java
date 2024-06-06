@@ -2,46 +2,56 @@ package com.example.CogentCapstone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-//ToDo:Finnish wishlist service
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class WishlistService {
     @Autowired
-    private WishListRepository wishlistRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
+    private WishListRepository wishListRepository;
 
     @Autowired
     private UserRepository userRepository;
 
-    public WishList getWishlistByUserId(Long userId) {
-        return wishlistRepository.findByUserId(userId);
+    @Autowired
+    private ProductRepository productRepository;
+
+    public List<WishList> getWishListByUserId(Long userId) {
+        return wishListRepository.findByUserId(userId);
     }
 
-    public WishList addItemToWishlist(Long userId, Long productId) {
-        WishList wishlist = getWishlistByUserId(userId);
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    @Transactional
+    public WishList addProductToWishList(Long userId, Long productId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Check if the product is already in the wishlist
-        WishList existingWishlistItem = wishlistRepository.findByUserAndProduct(user, product);
+        Optional<WishList> existingWishList = wishListRepository.findByUserAndProduct(user, product);
 
-        if (existingWishlistItem != null) {
-            return wishlist; 
+        if (existingWishList != null) {
+            return existingWishList.get(); 
         } else {
-            WishList newItem = new WishList();
-            newItem.setUser(user);
-            newItem.setProduct(product);
-            return wishlistRepository.save(newItem);
+            WishList newWishList = new WishList();
+            newWishList.setUser(user);
+            newWishList.setProduct(product);
+            return wishListRepository.save(newWishList);
         }
     }
 
-    public void removeItemFromWishlist(Long userId, Long productId) {
-        WishList wishlist = getWishlistByUserId(userId);
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+    @Transactional
+    public void removeProductFromWishList(Long userId, Long productId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        WishList item = wishlistRepository.findByUserAndProduct(wishlist.getUser(), product);
-        wishlistRepository.delete(item);
+        Optional<WishList> wishListOpt = wishListRepository.findByUserAndProduct(user, product);
+        if (wishListOpt.isPresent()) {
+        	WishList wishList = wishListOpt.get();
+            wishListRepository.delete(wishList);;
+        }
     }
 }
