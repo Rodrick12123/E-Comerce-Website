@@ -12,6 +12,12 @@ public class ProductService {
 	@Autowired
 	private ProductRepository productRepo;
 	
+	@Autowired
+	private OrderItemRepository orderItemRepository;
+	
+	@Autowired
+	private WishListRepository wishRepository;
+	
 	private Random random = new Random();
 	
 	private Long generateRandomId() {
@@ -33,16 +39,37 @@ public class ProductService {
 		return productRepo.findByCategory( category);
 	}
 	
+	public Product updateProduct(Long id, Product updatedProduct) {
+        return productRepo.findById(id).map(product -> {
+            product.setName(updatedProduct.getName());
+            product.setDescription(updatedProduct.getDescription());
+            product.setCategory(updatedProduct.getCategory());
+            product.setImage(updatedProduct.getImage());
+            product.setPrice(updatedProduct.getPrice());
+            return productRepo.save(product);
+        }).orElseThrow();
+    }
+	
 	public List<Product> getAllProducts(){
 		
 		return productRepo.findAll();
 	}
 	
 	public void deleteById(Long id) {
+		
+        List<OrderItem> orderItems = orderItemRepository.findByProductId(id);
+        List<WishList> wishListItems = wishRepository.findByProductId(id);
+        wishRepository.deleteAll(wishListItems);
+        orderItemRepository.deleteAll(orderItems);
         productRepo.deleteById(id);
     }
 	
-	public List<Product> findAllByOrderByPriceDesc() {
+	public List<Product> findAllByOrderByPriceAsc() {
+        return productRepo.findAllByOrderByPriceAsc();
+    }
+    
+    public List<Product> findAllByOrderByPriceDesc() {
         return productRepo.findAllByOrderByPriceDesc();
     }
+    
 }

@@ -10,24 +10,25 @@ import java.util.List;
 @RequestMapping("/api/wishlist")
 @CrossOrigin(origins = "http://localhost:4201")
 public class WishlistController {
-    @Autowired
-    private WishlistService wishListService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<WishList>> getWishList(@PathVariable Long userId) {
-        List<WishList> wishList = wishListService.getWishListByUserId(userId);
-        return ResponseEntity.ok(wishList);
-    }
+    @Autowired
+    private WishlistService wishlistService;
 
     @PostMapping("/add")
     public ResponseEntity<WishList> addProductToWishList(@RequestParam Long userId, @RequestParam Long productId) {
-        WishList wishList = wishListService.addProductToWishList(userId, productId);
+        WishList wishList = wishlistService.addProductToWishList(userId, productId);
         return ResponseEntity.ok(wishList);
     }
 
     @DeleteMapping("/remove")
     public ResponseEntity<Void> removeProductFromWishList(@RequestParam Long userId, @RequestParam Long productId) {
-        wishListService.removeProductFromWishList(userId, productId);
+        wishlistService.removeProductFromWishList(userId, productId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<WishList>> getWishList(@PathVariable Long userId) {
+        List<WishList> wishList = wishlistService.getWishListByUserId(userId);
+        return ResponseEntity.ok(wishList);
     }
 }

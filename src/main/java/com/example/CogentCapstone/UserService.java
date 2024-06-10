@@ -66,5 +66,12 @@ public class UserService implements UserDetailsService {
             .build();
     }
 
+    public User updateUser(Long id, User updatedUser) {
+        return userRepository.findById(id).map(user -> {
+            user.setUsername(updatedUser.getUsername());
+            user.setPassword(updatedUser.getPassword());
+            return userRepository.save(user);
+        }).orElseThrow();
+    }
 	
 }

@@ -28,6 +28,7 @@ public class SecurityConfig {
 
     @Autowired
     private UserService userService;
+    
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -41,9 +42,15 @@ public class SecurityConfig {
                     .requestMatchers("/user").permitAll()
 //                    .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
 //                    .anyRequest().authenticated()
-            ).sessionManagement()
-	        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-	        
+            );
+            
+//            .formLogin()
+//            .loginPage("/user")
+//            .defaultSuccessUrl("/products", true)
+//            .and()
+//        .logout()
+//            .logoutSuccessUrl("/logout");
+        
 
         return http.build();
     }

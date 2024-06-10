@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,9 +37,23 @@ public class AccountController {
         return userService.save(user);
     }
     
+//    @GetMapping("/current-user")
+//    public ResponseEntity<?> getCurrentUser() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
+//        User user = userService.findByUsername(username);
+//        return ResponseEntity.ok(user);
+//    }
+    
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.login(user.getUsername(), user.getPassword()));
+    }
+    
+    @PutMapping("users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        User user = userService.updateUser(id, updatedUser);
+        return ResponseEntity.ok(user);
     }
     
     @DeleteMapping("/users/{id}")
@@ -51,6 +66,11 @@ public class AccountController {
         return userService.loadUsers();
     }
     
+    
+    @GetMapping("/user")
+    public ResponseEntity<?> getUser(@RequestBody Authentication authentication) {
+        return ResponseEntity.ok(authentication.getPrincipal());
+    }
     @GetMapping("/user/{id}")
     public Optional<User> loadUser(@PathVariable("id") Long id) {
         return userService.findById(id);

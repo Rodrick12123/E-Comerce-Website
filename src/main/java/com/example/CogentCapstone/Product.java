@@ -1,12 +1,16 @@
 package com.example.CogentCapstone;
 
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 
 
 @Entity
@@ -21,7 +25,8 @@ public class Product {
     private Double price;
     private Integer quantity;
     private String description;
-
+    
+   
 	private String image;
     
 	public Double getPrice() {
@@ -56,11 +61,19 @@ public class Product {
 		this.price = price;
 	}
 	
-	public void setCategory() {
+	public void setCategory(String category) {
 		this.category = category;
 	}
 	
 	public String getCategory() {
 		return this.category;
+	}
+	
+	public void setDescription(String desc) {
+		this.description = desc;
+	}
+	
+	public String getDescription() {
+		return this.description;
 	}
 }
